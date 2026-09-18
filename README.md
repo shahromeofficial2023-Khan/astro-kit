@@ -7,7 +7,7 @@ change here reaches a site only when that site is upgraded on purpose.
 ## Install
 
 ```sh
-npm install github:shahromeofficial2023-Khan/astro-kit#v0.1.0
+npm install github:shahromeofficial2023-Khan/astro-kit#v0.2.0
 ```
 
 No registry, no token. Always pin a tag — never a branch.
@@ -57,13 +57,68 @@ import JsonLd from '@shahrome/astro-kit/JsonLd.astro';
 
 Multi-language sites pass `alternates`, `xDefault` and `ogLocaleAlternates`.
 
+## Page building blocks (v0.2)
+
+A fleet tool page is assembled, not written. Everything below reads `site.json` itself.
+
+```astro
+---
+import Layout from '@shahrome/astro-kit/Layout.astro';
+import Hero from '@shahrome/astro-kit/Hero.astro';
+import Calculator from '@shahrome/astro-kit/Calculator.astro';
+import Choice from '@shahrome/astro-kit/Choice.astro';
+import Field from '@shahrome/astro-kit/Field.astro';
+import ResultCard from '@shahrome/astro-kit/ResultCard.astro';
+import Facts from '@shahrome/astro-kit/Facts.astro';
+import Timeline from '@shahrome/astro-kit/Timeline.astro';
+import Faq from '@shahrome/astro-kit/Faq.astro';
+import ToolSchema from '@shahrome/astro-kit/ToolSchema.astro';
+---
+<Layout title="…" description="…" path="/">
+  <ToolSchema slot="head" description="…" />
+  <Hero title="…">One-paragraph intro.</Hero>
+  <Calculator>
+    <Fragment slot="inputs">
+      <Choice name="mode" legend="Calculate from" options={[…]} />
+      <Field id="x" label="…" hint="…" errors><input id="x" name="x" /></Field>
+    </Fragment>
+    <Fragment slot="result">
+      <ResultCard tag="Example" pre="You get" big="…" sub="…" percent={40} note="…" />
+      <Facts items={[{ id: 'r-a', value: '…', label: '…' }]} />
+      <Timeline items={[{ key: 'k', label: '…', when: '…', state: 'done' }]} />
+    </Fragment>
+  </Calculator>
+  <article class="wrap content">… <Faq items={[['Question?', 'Answer.']]} /></article>
+</Layout>
+```
+
+| Piece | What it gives you |
+|---|---|
+| `Layout` | SEO head, brand colours from `site.json` `brand_tokens`, skip link, header, footer with `disclaimer` |
+| `Hero` | coloured band with H1 + intro; wraps any length of text |
+| `Calculator` | inputs/result card; result side is a live region |
+| `Choice` | radio options as tiles (≤ 4 per row) or a compact pair |
+| `Field` | label + control + hint + error line, with stable ids; `show` ties it to one Choice option |
+| `ResultCard` | headline answer; ids `r-tag r-pre r-big r-sub r-bar r-note` |
+| `Facts`, `Timeline` | secondary figures; dated steps with done/next states |
+| `Faq` | the questions **and** FAQPage JSON-LD from one list |
+| `ToolSchema` | WebApplication JSON-LD |
+| `@shahrome/astro-kit/client` | `createResult(out)` (an error never leaves an old answer looking current), `showFieldsFor`, `localToday` |
+
+**Brand colours** live in `site.json` → `brand_tokens.light` (+ `dark` for what changes). Keys: `header on_header
+hero_ink heading accent on_accent accent_ink progress result ground surface ink muted line err shadow`.
+`kit check` fails the build if any text/background pair is under WCAG AA (4.5:1; 3:1 for the progress bar), in
+either mode.
+
+**`/llms.txt`** is generated from `site.json` → `llms: { summary, facts }` when present.
+
 ## CLI
 
 Run from a site's root, after `npm run build`:
 
 | Command | Does |
 |---|---|
-| `kit check` | Inspects `dist/`: one canonical per page on the live host, hreflang targets exist and link back, sitemap lists every page, robots points at it, JSON-LD parses, no leftover `{tokens}`, no placeholder host, and every referenced share image and favicon exists. Exit 1 on any problem. |
+| `kit check` | Checks brand contrast, then inspects `dist/`: one canonical per page on the live host, hreflang targets exist and link back, sitemap lists every page, robots points at it, JSON-LD parses, no leftover `{tokens}`, no placeholder host, and every referenced share image and favicon exists. Exit 1 on any problem. |
 | `kit og` | Renders the 1200×630 share images listed under `og.cards` in `site.json` into `public/`. |
 | `kit doctor` | Is `site.json` valid? Does the pin in `package.json` match `site.json`? Is a newer kit tag out? |
 

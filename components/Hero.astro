@@ -1,0 +1,9 @@
+---
+/** The coloured band at the top: H1 + one-paragraph intro. The band always wraps its text. */
+interface Props { title: string }
+const { title } = Astro.props;
+---
+<section class="hero"><div class="wrap">
+  <h1>{title}</h1>
+  <p class="lede"><slot /></p>
+</div></section>

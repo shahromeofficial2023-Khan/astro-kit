@@ -1,0 +1,14 @@
+---
+/**
+ * FAQ: renders the questions AND the FAQPage JSON-LD from the same list, so the two can never disagree.
+ */
+import JsonLd from './JsonLd.astro';
+interface Props { items: [string, string][] }
+const { items } = Astro.props;
+const graph = [{ '@type': 'FAQPage', mainEntity: items.map(([q, a]) => ({
+  '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }];
+---
+<div class="faq">
+  {items.map(([q, a]) => <details><summary>{q}</summary><p>{a}</p></details>)}
+</div>
+<JsonLd graph={graph} />

@@ -27,10 +27,15 @@ export function siteUrl(s) {
   return s.domain ? `https://${s.domain}` : s.interim_url.replace(/\/$/, '');
 }
 
-/** Astro integration: fleet defaults + site from site.json + sitemap + /robots.txt. */
+/**
+ * Astro integration: fleet defaults + site from site.json + sitemap + /robots.txt, and a virtual
+ * module `virtual:fleet-site` so kit components read site.json without every page passing it in.
+ * /llms.txt is generated from site.json "llms" when that key exists (a site may keep its own route instead).
+ */
 export function kit(s) {
   const problems = validateSite(s);
   if (problems.length) throw new Error(`astro-kit:\n  ${problems.join('\n  ')}`);
+  const VIRTUAL = 'virtual:fleet-site';
   return {
     name: '@shahrome/astro-kit',
     hooks: {
@@ -41,11 +46,66 @@ export function kit(s) {
           trailingSlash: 'always',
           build: { inlineStylesheets: 'always' },
           integrations: [sitemap()],
+          vite: { plugins: [{
+            name: 'fleet-site',
+            resolveId: (id) => (id === VIRTUAL ? '\0' + VIRTUAL : null),
+            load: (id) => (id === '\0' + VIRTUAL ? `export default ${JSON.stringify(s)};` : null),
+          }] },
         });
         injectRoute({ pattern: '/robots.txt', entrypoint: '@shahrome/astro-kit/routes/robots.js', prerender: true });
+        if (s.llms) injectRoute({ pattern: '/llms.txt', entrypoint: '@shahrome/astro-kit/routes/llms.js', prerender: true });
       },
     },
   };
+}
+
+/** site.json brand_tokens → CSS custom properties. Dark mode inherits any token it doesn't set. */
+export function tokensCss(tokens) {
+  if (!tokens?.light) return '';
+  const decl = (t) => Object.entries(t).map(([k, v]) =>
+    k === 'shadow' ? `--shadow:0 6px 24px ${v}` : `--${k.replace(/_/g, '-')}:${v}`).join(';');
+  const dark = tokens.dark ? `@media (prefers-color-scheme:dark){:root{${decl(tokens.dark)}}}` : '';
+  return `:root{${decl(tokens.light)};color-scheme:${tokens.dark ? 'light dark' : 'light'}}${dark}`;
+}
+
+/** Every text/background pair a fleet page draws, as [text token, background token, minimum ratio]. */
+export const CONTRAST_PAIRS = [
+  ['ink', 'ground', 4.5], ['ink', 'surface', 4.5], ['ink', 'result', 4.5],
+  ['muted', 'ground', 4.5], ['muted', 'surface', 4.5], ['muted', 'result', 4.5],
+  ['heading', 'ground', 4.5], ['heading', 'result', 4.5],
+  ['accent_ink', 'ground', 4.5], ['accent_ink', 'surface', 4.5],
+  ['on_accent', 'accent', 4.5], ['on_header', 'header', 4.5], ['hero_ink', 'header', 4.5],
+  ['err', 'surface', 4.5], ['progress', 'surface', 3],
+];
+
+function luminance(hex) {
+  const h = hex.replace('#', '');
+  const c = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255)
+    .map((x) => (x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+}
+export function contrast(a, b) {
+  const [x, y] = [luminance(a), luminance(b)].sort((p, q) => q - p);
+  return (x + 0.05) / (y + 0.05);
+}
+
+/** WCAG problems in a brand_tokens object, both modes. */
+export function contrastProblems(tokens) {
+  if (!tokens?.light) return [];
+  const out = [];
+  for (const mode of ['light', 'dark']) {
+    if (mode === 'dark' && !tokens.dark) continue;
+    const t = mode === 'dark' ? { ...tokens.light, ...tokens.dark } : tokens.light;
+    for (const [fg, bg, min] of CONTRAST_PAIRS) {
+      if (!/^#[0-9a-f]{6}$/i.test(t[fg] ?? '') || !/^#[0-9a-f]{6}$/i.test(t[bg] ?? '')) {
+        out.push(`brand_tokens.${mode}: ${fg} or ${bg} is missing or not #rrggbb`);
+        continue;
+      }
+      const r = contrast(t[fg], t[bg]);
+      if (r < min) out.push(`brand_tokens.${mode}: ${fg} on ${bg} is ${r.toFixed(2)}:1, needs ${min}:1`);
+    }
+  }
+  return out;
 }
 
 /**

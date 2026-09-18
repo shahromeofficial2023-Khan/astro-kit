@@ -1,3 +1,4 @@
+/// <reference path="./virtual.d.ts" />
 import type { AstroIntegration } from 'astro';
 
 export type Host = 'vercel' | 'sftp';
@@ -25,6 +26,14 @@ export interface SiteConfig {
   locales?: string[];
   analytics?: string | null;
   og?: { colors?: Record<string, string>; cards: OgCard[] };
+  /** light is required; dark overrides only what changes. Keys: header on_header hero_ink heading accent
+   *  on_accent accent_ink progress result ground surface ink muted line err shadow */
+  brand_tokens?: { light: Record<string, string>; dark?: Record<string, string> };
+  /** footer sentence after the site name, e.g. "gives estimates, not medical advice." */
+  disclaimer?: string;
+  /** when present, the kit generates /llms.txt from it */
+  llms?: { summary: string; facts?: string[]; heading?: string; note?: string;
+           links?: { title: string; path: string; note?: string }[] };
 }
 
 export declare const HOSTS: Host[];
@@ -39,3 +48,7 @@ export declare function llmsTxt(o: {
   links: { title: string; path: string; note?: string }[];
   facts?: string[];
 }): Response;
+export declare function tokensCss(tokens: SiteConfig['brand_tokens']): string;
+export declare function contrast(a: string, b: string): number;
+export declare function contrastProblems(tokens: SiteConfig['brand_tokens']): string[];
+export declare const CONTRAST_PAIRS: [string, string, number][];

@@ -1,0 +1,11 @@
+---
+/** Dated steps under the result. state "done" gets a tick, "next" is bold. Scripts update by data-key. */
+interface Step { key: string; label: string; when: string; state?: 'done' | 'next' }
+interface Props { id?: string; items: Step[] }
+const { id = 'r-steps', items } = Astro.props;
+---
+<ol class="timeline" id={id}>
+  {items.map((s) => (
+    <li class={s.state} data-key={s.key}><span class="what">{s.label}</span><span class="when">{s.when}</span></li>
+  ))}
+</ol>

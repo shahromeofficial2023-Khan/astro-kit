@@ -1,0 +1,14 @@
+---
+/**
+ * The calculator card: inputs on one side, result on the other (stacked on phones), overlapping the hero.
+ * slots: "inputs" (a form), "result" (ResultCard, Facts, Timeline…). The result side is a live region.
+ */
+interface Props { formId?: string }
+const { formId = 'calc' } = Astro.props;
+---
+<div class="wrap calc-wrap">
+  <div class="card calc">
+    <form class="calc-in" id={formId} novalidate onsubmit="return false"><slot name="inputs" /></form>
+    <div class="calc-out" aria-live="polite"><slot name="result" /></div>
+  </div>
+</div>

@@ -9,7 +9,7 @@
 import { readFileSync, existsSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { validateSite, siteUrl } from '../index.mjs';
+import { validateSite, siteUrl, contrastProblems } from '../index.mjs';
 
 const KIT_REPO = 'https://github.com/shahromeofficial2023-Khan/astro-kit.git';
 const cwd = process.cwd();
@@ -23,7 +23,7 @@ const out = (summary, problems) => {
 // ---------------------------------------------------------------- check
 function check() {
   const site = readSite();
-  const problems = validateSite(site);
+  const problems = [...validateSite(site), ...contrastProblems(site.brand_tokens)];
   const base = new URL(siteUrl(site));
   const dist = join(cwd, 'dist');
   if (!existsSync(dist)) out({ pages: 0 }, [...problems, 'no dist/ — run the build first']);

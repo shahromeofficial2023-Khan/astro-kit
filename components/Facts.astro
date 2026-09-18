@@ -1,0 +1,9 @@
+---
+/** A 2-column grid of secondary figures under the result. Each value/label has an id the script updates. */
+interface Fact { id: string; value: string; label: string; labelId?: string }
+interface Props { items: Fact[] }
+const { items } = Astro.props;
+---
+<ul class="facts">
+  {items.map((f) => <li><b id={f.id}>{f.value}</b><span id={f.labelId}>{f.label}</span></li>)}
+</ul>

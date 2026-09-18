@@ -1,0 +1,41 @@
+---
+/**
+ * The page shell every fleet tool site shares: SEO head, brand colours from site.json, skip link,
+ * header, footer with the site's disclaimer. Pages supply only their content.
+ *   <Layout title description path>  ·  slots: head, logo, default
+ */
+import '../styles/base.css';
+import Head from './Head.astro';
+import site from 'virtual:fleet-site';
+import { tokensCss } from '../index.mjs';
+
+interface Props {
+  title: string; description: string; path: string;
+  ogImage?: string; lang?: string; dir?: 'ltr' | 'rtl'; ogLocale?: string;
+}
+const { title, description, path, ogImage, lang = 'en', dir = 'ltr', ogLocale = 'en_US' } = Astro.props;
+const tokens = site.brand_tokens;
+const css = tokensCss(tokens);
+---
+<!doctype html>
+<html lang={lang} dir={dir}>
+<head>
+  <Head title={title} description={description} path={path} siteName={site.name}
+    ogLocale={ogLocale} ogImage={ogImage} themeColor={tokens?.light?.header} />
+  {css && <style is:inline set:html={css} />}
+  <slot name="head" />
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site"><div class="wrap">
+  <a class="brand" href="/">
+    <slot name="logo"><img src="/favicon.svg" alt="" width="30" height="30" /></slot>
+    {site.name}
+  </a>
+</div></header>
+<main id="main"><slot /></main>
+<footer><div class="wrap">
+  {site.disclaimer && <p><strong>{site.name}</strong> {site.disclaimer}</p>}
+</div></footer>
+</body>
+</html>

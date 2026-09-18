@@ -1,6 +1,6 @@
 {
   "name": "@shahrome/astro-kit",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Shared SEO head, routes, build contract and share-image renderer for the ws12 Astro fleet.",
   "type": "module",
   "license": "MIT",
@@ -12,9 +12,25 @@
       "types": "./index.d.ts",
       "default": "./index.mjs"
     },
+    "./client": {
+      "types": "./client/index.d.ts",
+      "default": "./client/index.js"
+    },
+    "./routes/robots.js": "./routes/robots.js",
+    "./routes/llms.js": "./routes/llms.js",
+    "./base.css": "./styles/base.css",
+    "./Calculator.astro": "./components/Calculator.astro",
+    "./Choice.astro": "./components/Choice.astro",
+    "./Facts.astro": "./components/Facts.astro",
+    "./Faq.astro": "./components/Faq.astro",
+    "./Field.astro": "./components/Field.astro",
     "./Head.astro": "./components/Head.astro",
+    "./Hero.astro": "./components/Hero.astro",
     "./JsonLd.astro": "./components/JsonLd.astro",
-    "./routes/robots.js": "./routes/robots.js"
+    "./Layout.astro": "./components/Layout.astro",
+    "./ResultCard.astro": "./components/ResultCard.astro",
+    "./Timeline.astro": "./components/Timeline.astro",
+    "./ToolSchema.astro": "./components/ToolSchema.astro"
   },
   "bin": {
     "kit": "./bin/kit.mjs"
@@ -22,8 +38,11 @@
   "files": [
     "index.mjs",
     "index.d.ts",
+    "virtual.d.ts",
     "components",
     "routes",
+    "styles",
+    "client",
     "bin"
   ],
   "peerDependencies": {

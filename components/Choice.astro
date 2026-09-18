@@ -1,0 +1,29 @@
+---
+/**
+ * A group of mutually exclusive options as radio buttons. "tiles" = large buttons in a grid (one row of up
+ * to 4 on wider screens); "pair" = a compact row, for 2–3 short options.
+ */
+interface Option { value: string | number; label: string }
+interface Props { name: string; legend: string; options: Option[]; checked?: string | number; variant?: 'tiles' | 'pair' }
+const { name, legend, options, checked = options[0]?.value, variant = 'tiles' } = Astro.props;
+const lid = `${name}-legend`;
+---
+{variant === 'tiles' ? (
+  <fieldset>
+    <legend>{legend}</legend>
+    <div class="choices" style={`--cols:${Math.min(options.length, 4)}`}>
+      {options.map((o) => (
+        <label><input type="radio" name={name} value={o.value} checked={o.value === checked} /><span>{o.label}</span></label>
+      ))}
+    </div>
+  </fieldset>
+) : (
+  <>
+    <span class="lbl" id={lid}>{legend}</span>
+    <div class="pair" role="radiogroup" aria-labelledby={lid}>
+      {options.map((o) => (
+        <label><input type="radio" name={name} value={o.value} checked={o.value === checked} /> {o.label}</label>
+      ))}
+    </div>
+  </>
+)}

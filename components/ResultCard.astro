@@ -1,0 +1,17 @@
+---
+/**
+ * The headline answer. Render the site's default/example answer at build time so the card is never empty
+ * and never changes size (CLS 0); the page script updates the same ids: r-tag r-pre r-big r-sub r-bar r-note.
+ * Pair with createResult() from '@shahrome/astro-kit/client' so an error never leaves an old answer looking current.
+ */
+interface Props { tag?: string; pre?: string; big: string; sub?: string; percent?: number; note?: string }
+const { tag = '', pre, big, sub, percent, note } = Astro.props;
+---
+<div class="result">
+  <span class="tag" id="r-tag">{tag}</span>
+  {pre && <div class="pre" id="r-pre">{pre}</div>}
+  <div class="big" id="r-big">{big}</div>
+  {sub !== undefined && <p class="tri" id="r-sub">{sub}</p>}
+  {percent !== undefined && <div class="bar" aria-hidden="true"><span id="r-bar" style={`width:${percent}%`}></span></div>}
+  {note !== undefined && <p class="pct" id="r-note">{note}</p>}
+</div>

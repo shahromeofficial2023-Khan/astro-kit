@@ -1,0 +1,10 @@
+---
+/** WebApplication JSON-LD for a free tool page. Put it in Layout's "head" slot. */
+import JsonLd from './JsonLd.astro';
+import site from 'virtual:fleet-site';
+interface Props { description: string; category?: string; path?: string }
+const { description, category = 'UtilitiesApplication', path = '/' } = Astro.props;
+const graph = [{ '@type': 'WebApplication', name: site.name, url: new URL(path, Astro.site).href, description,
+  applicationCategory: category, operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }];
+---
+<JsonLd graph={graph} />

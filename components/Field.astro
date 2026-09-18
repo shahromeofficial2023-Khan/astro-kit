@@ -1,0 +1,15 @@
+---
+/**
+ * One input with its label, hint and error line. The control goes in the slot and must use id={id}.
+ * Rendered ids: `${id}-label`, `${id}-hint`, `${id}-err` — scripts update them; `show` limits the field
+ * to one choice of a Choice group (data-for, see showFieldsFor in client/form.js).
+ */
+interface Props { id: string; label?: string; hint?: string; show?: string; hidden?: boolean; errors?: boolean }
+const { id, label, hint, show, hidden = false, errors = false } = Astro.props;
+---
+<div class="field" data-for={show} hidden={hidden}>
+  {label && <label for={id} id={`${id}-label`}>{label}</label>}
+  <slot />
+  {hint && <p class="hint" id={`${id}-hint`}>{hint}</p>}
+  {errors && <p class="err" id={`${id}-err`} aria-live="polite"></p>}
+</div>
