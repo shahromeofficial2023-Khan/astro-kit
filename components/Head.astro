@@ -1,0 +1,54 @@
+---
+/**
+ * The SEO head every fleet site shares. Put it first inside <head>; site-specific tags
+ * (fonts, JSON-LD, extra meta) go after it.
+ *
+ * Every URL is made absolute against Astro's `site`, which the fleet sets from site.json —
+ * so moving a site to its real domain changes every tag here with no code change.
+ */
+export interface Alternate { lang: string; href: string }
+interface Props {
+  title: string;
+  description: string;
+  path: string;                 // this page's path, e.g. /pool-volume-calculator/
+  siteName: string;
+  ogLocale: string;             // e.g. en_US
+  alternates?: Alternate[];     // every language version of THIS page, including itself
+  xDefault?: string;            // path of the x-default version; omit for single-language sites
+  ogLocaleAlternates?: string[];
+  ogImage?: string;
+  themeColor?: string;
+  robots?: string;
+  favicon?: string;
+}
+const {
+  title, description, path, siteName, ogLocale,
+  alternates = [], xDefault, ogLocaleAlternates = [],
+  ogImage = '/og-default.png', themeColor, favicon = '/favicon.svg',
+  robots = 'index, follow, max-image-preview:large',
+} = Astro.props;
+const site = Astro.site;
+if (!site) throw new Error('astro-kit: `site` is not set — the kit() integration sets it from site.json');
+const abs = (p: string) => new URL(p, site).href;
+const canonical = abs(path);
+---
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={abs(a.href)} />)}
+{xDefault && <link rel="alternate" hreflang="x-default" href={abs(xDefault)} />}
+<meta name="robots" content={robots} />
+{themeColor && <meta name="theme-color" content={themeColor} />}
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:locale" content={ogLocale} />
+{ogLocaleAlternates.map((o) => <meta property="og:locale:alternate" content={o} />)}
+<meta property="og:image" content={abs(ogImage)} />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href={favicon} type={favicon.endsWith('.svg') ? 'image/svg+xml' : undefined} />
+<link rel="sitemap" href="/sitemap-index.xml" />

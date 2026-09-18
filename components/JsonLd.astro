@@ -1,0 +1,7 @@
+---
+/** One JSON-LD block holding a schema.org @graph. `kit check` verifies it parses. */
+interface Props { graph: Record<string, unknown>[] }
+const { graph } = Astro.props;
+const json = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
+---
+<script type="application/ld+json" set:html={json} is:inline />
