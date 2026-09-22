@@ -30,12 +30,16 @@ h1 { color: var(--on-header); font-size: clamp(1.9rem, 4vw, 2.6rem); line-height
 .lede { color: var(--hero-ink); max-width: 62ch; margin: 0 0 18px }
 
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow) }
-.calc { display: grid; grid-template-columns: 1fr }
-@media (min-width: 768px) { .calc { grid-template-columns: 1fr 1fr } }
-.calc-in, .calc-out { padding: 20px; min-width: 0 }
-.calc-out { border-top: 1px solid var(--line) }
-@media (min-width: 768px) { .calc-out { border-top: 0; border-inline-start: 1px solid var(--line) } }
-@media (min-width: 1024px) { .calc-in, .calc-out { padding: 28px } }
+.calc { display: grid; grid-template-columns: 1fr; grid-template-areas: "in" "out" "opts" }
+.calc-in { grid-area: in } .calc-out { grid-area: out } .calc-opts { grid-area: opts }
+.calc-in, .calc-out, .calc-opts { padding: 20px; min-width: 0 }
+.calc-out, .calc-opts { border-top: 1px solid var(--line) }
+.calc-opts:empty { display: none }
+@media (min-width: 768px) {
+  .calc { grid-template-columns: 1fr 1fr; grid-template-areas: "in out" "opts out"; grid-template-rows: auto 1fr }
+  .calc-out { border-top: 0; border-inline-start: 1px solid var(--line) }
+}
+@media (min-width: 1024px) { .calc-in, .calc-out, .calc-opts { padding: 28px } }
 
 fieldset { border: 0; margin: 0 0 16px; padding: 0; min-width: 0 }
 legend { font-weight: 600; font-size: .9375rem; margin-bottom: 8px; padding: 0 }

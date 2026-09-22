@@ -1,6 +1,6 @@
 {
   "name": "@shahrome/astro-kit",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Shared SEO head, routes, build contract and share-image renderer for the ws12 Astro fleet.",
   "type": "module",
   "license": "MIT",

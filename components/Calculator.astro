@@ -1,14 +1,18 @@
 ---
 /**
- * The calculator card: inputs on one side, result on the other (stacked on phones), overlapping the hero.
- * slots: "inputs" (a form), "result" (ResultCard, Facts, Timeline…). The result side is a live region.
+ * The calculator card: inputs on one side, result on the other, overlapping the hero.
+ * slots: "inputs" (a form), "result" (ResultCard, Facts, Timeline…), optional "options" (secondary controls such as
+ * a method chooser; give its inputs form={formId} so they stay part of the form). Phones stack input → result → options,
+ * so the answer is on the first screen; from 768px the result sits on the right beside input + options.
+ * `label` names the form for assistive tech (no visible title needed). The result side is a live region.
  */
-interface Props { formId?: string }
-const { formId = 'calc' } = Astro.props;
+interface Props { formId?: string; label?: string }
+const { formId = 'calc', label } = Astro.props;
 ---
 <div class="wrap calc-wrap">
   <div class="card calc">
-    <form class="calc-in" id={formId} novalidate onsubmit="return false"><slot name="inputs" /></form>
+    <form class="calc-in" id={formId} novalidate onsubmit="return false" aria-label={label}><slot name="inputs" /></form>
     <div class="calc-out" aria-live="polite"><slot name="result" /></div>
+    <div class="calc-opts"><slot name="options" /></div>
   </div>
 </div>

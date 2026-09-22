@@ -57,6 +57,12 @@ import JsonLd from '@shahrome/astro-kit/JsonLd.astro';
 
 Multi-language sites pass `alternates`, `xDefault` and `ogLocaleAlternates`.
 
+## Calculator options slot (v0.3.3)
+
+`<Calculator label="…">` names the form for assistive tech. The optional `options` slot holds secondary controls
+(a method chooser, units); pass `form="calc"` on its inputs (`<Choice form="calc">`). Phones stack
+input → result → options so the answer is on the first screen; from 768px the result sits on the right.
+
 ## Theme (v0.3.2)
 
 `brand_tokens.light` is required; `brand_tokens.dark` is optional. `theme` decides how dark is applied:

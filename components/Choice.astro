@@ -4,8 +4,8 @@
  * to 4 on wider screens); "pair" = a compact row, for 2–3 short options.
  */
 interface Option { value: string | number; label: string }
-interface Props { name: string; legend: string; options: Option[]; checked?: string | number; variant?: 'tiles' | 'pair' }
-const { name, legend, options, checked = options[0]?.value, variant = 'tiles' } = Astro.props;
+interface Props { name: string; legend: string; options: Option[]; checked?: string | number; variant?: 'tiles' | 'pair'; form?: string }
+const { name, legend, options, checked = options[0]?.value, variant = 'tiles', form } = Astro.props;
 const lid = `${name}-legend`;
 ---
 {variant === 'tiles' ? (
@@ -13,7 +13,7 @@ const lid = `${name}-legend`;
     <legend>{legend}</legend>
     <div class="choices" style={`--cols:${Math.min(options.length, 4)}`}>
       {options.map((o) => (
-        <label><input type="radio" name={name} value={o.value} checked={o.value === checked} /><span>{o.label}</span></label>
+        <label><input type="radio" name={name} value={o.value} checked={o.value === checked} form={form} /><span>{o.label}</span></label>
       ))}
     </div>
   </fieldset>
@@ -22,7 +22,7 @@ const lid = `${name}-legend`;
     <span class="lbl" id={lid}>{legend}</span>
     <div class="pair" role="radiogroup" aria-labelledby={lid}>
       {options.map((o) => (
-        <label><input type="radio" name={name} value={o.value} checked={o.value === checked} /> {o.label}</label>
+        <label><input type="radio" name={name} value={o.value} checked={o.value === checked} form={form} /> {o.label}</label>
       ))}
     </div>
   </>
