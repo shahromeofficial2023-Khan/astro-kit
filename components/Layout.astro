@@ -6,15 +6,19 @@
  *   `footer` replaces the default one-line footer; `after-main` sits between main and footer (back-to-top etc.).
  */
 import '../styles/base.css';
-import Head from './Head.astro';
+import Head, { type Alternate } from './Head.astro';
 import site from 'virtual:fleet-site';
 import { tokensCss } from '../index.mjs';
 
 interface Props {
   title: string; description: string; path: string;
   ogImage?: string; lang?: string; dir?: 'ltr' | 'rtl'; ogLocale?: string; robots?: string;
+  alternates?: Alternate[]; xDefault?: string; ogLocaleAlternates?: string[];   // multilingual pages
+  fontHref?: string;      // a Google Fonts stylesheet URL loaded only on this page (e.g. an Arabic face)
+  bodyClass?: string;
 }
-const { title, description, path, ogImage, lang = 'en', dir = 'ltr', ogLocale = 'en_US', robots } = Astro.props;
+const { title, description, path, ogImage, lang = 'en', dir = 'ltr', ogLocale = 'en_US', robots,
+  alternates = [], xDefault, ogLocaleAlternates = [], fontHref, bodyClass } = Astro.props;
 const tokens = site.brand_tokens;
 const css = tokensCss(tokens);
 ---
@@ -23,12 +27,14 @@ const css = tokensCss(tokens);
 <head>
   <Head title={title} description={description} path={path} siteName={site.name}
     ogLocale={ogLocale} ogImage={ogImage} themeColor={tokens?.light?.header} robots={robots}
+    alternates={alternates} xDefault={xDefault} ogLocaleAlternates={ogLocaleAlternates}
     author={site.owner?.name} rss={site.rss ? '/rss.xml' : undefined} />
+  {fontHref && <><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link rel="stylesheet" href={fontHref} /></>}
   {css && <style is:inline set:html={css} />}
   <slot name="head" />
 </head>
-<body>
-<a class="skip" href="#main">Skip to content</a>
+<body class={bodyClass}>
+<a class="skip" href="#main"><slot name="skip">Skip to content</slot></a>
 <header class="site"><div class="wrap">
   <a class="brand" href="/">
     <slot name="logo"><img src="/favicon.svg" alt="" width="30" height="30" /></slot>
