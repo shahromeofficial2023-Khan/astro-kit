@@ -1,0 +1,24 @@
+---
+import Prose from './Prose.astro';
+import site from 'virtual:fleet-site';
+const contact = site.owner?.email;
+---
+<Prose title={`Privacy Policy | ${site.name}`} description={`How ${site.name} handles your data.`} path="/privacy/">
+  <h1>Privacy Policy</h1>
+  {site.legal_date && <p><em>Last updated {site.legal_date}.</em></p>}
+  <h2>What you enter</h2>
+  <p>The numbers you type into {site.name} are worked out in your own browser. They are not sent to us or stored by us.</p>
+  <h2>Accounts</h2>
+  <p>There are no accounts, sign-ups or logins, so we hold no profile about you.</p>
+  <h2>Hosting logs</h2>
+  <p>Like any website, our hosting provider may record basic technical data such as IP address, browser type and the page requested, to keep the site running and secure.</p>
+  {site.analytics && <><h2>Analytics</h2><p>We use an analytics service to count visits and see which pages are useful. It collects anonymous usage data such as pages viewed and device type.</p></>}
+  {site.ads && <><h2>Advertising and cookies</h2>
+    <p>This site shows ads served by Google and its partners. They may use cookies to show ads based on your visits to this and other websites.</p>
+    <p>You can turn off personalised ads in <a href="https://adssettings.google.com" rel="nofollow noopener">Google Ads Settings</a>. Learn more at <a href="https://policies.google.com/technologies/ads" rel="nofollow noopener">how Google uses data from sites that use its services</a>.</p></>}
+  <h2>Children</h2>
+  <p>{site.name} is not aimed at children under 13 and does not knowingly collect their data.</p>
+  <h2>Changes</h2>
+  <p>We may update this policy. The current version is always on this page.</p>
+  {contact && <><h2>Contact</h2><p>Privacy questions: <a href={`mailto:${contact}`}>{contact}</a>.</p></>}
+</Prose>

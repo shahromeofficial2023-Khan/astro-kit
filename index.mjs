@@ -36,6 +36,8 @@ export function kit(s) {
   const problems = validateSite(s);
   if (problems.length) throw new Error(`astro-kit:\n  ${problems.join('\n  ')}`);
   const VIRTUAL = 'virtual:fleet-site';
+  // pages that must stay out of the XML sitemap: the 404 page and anything the site lists as noindex (e.g. /search/)
+  const exclude = new Set(['/404/', ...(s.noindex ?? [])]);
   return {
     name: '@shahrome/astro-kit',
     hooks: {
@@ -45,7 +47,7 @@ export function kit(s) {
           output: 'static',
           trailingSlash: 'always',
           build: { inlineStylesheets: 'always' },
-          integrations: [sitemap()],
+          integrations: [sitemap({ filter: (page) => !exclude.has(new URL(page).pathname) })],
           vite: { plugins: [{
             name: 'fleet-site',
             resolveId: (id) => (id === VIRTUAL ? '\0' + VIRTUAL : null),

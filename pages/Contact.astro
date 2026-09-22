@@ -1,0 +1,11 @@
+---
+import Prose from './Prose.astro';
+import site from 'virtual:fleet-site';
+const o = site.owner!;
+---
+<Prose title={`Contact ${site.name}`} description={`How to reach the team behind ${site.name}.`} path="/contact-us/">
+  <h1>Contact</h1>
+  <p>Questions, corrections or ideas for {site.name} are welcome.</p>
+  <p>Email: <a href={`mailto:${o.email}?subject=${encodeURIComponent(site.name)}`}>{o.email}</a></p>
+  <p>Please include the numbers you entered if you are reporting a wrong result.</p>
+</Prose>

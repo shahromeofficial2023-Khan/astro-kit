@@ -1,0 +1,9 @@
+---
+import Prose from './Prose.astro';
+import site from 'virtual:fleet-site';
+---
+<Prose title={`Page not found | ${site.name}`} description="This page does not exist." path="/404/">
+  <h1>Page not found</h1>
+  <p>That page does not exist or has moved.</p>
+  <p><a href="/">Go to the {site.name} home page</a></p>
+</Prose>

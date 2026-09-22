@@ -20,12 +20,14 @@ interface Props {
   themeColor?: string;
   robots?: string;
   favicon?: string;
+  author?: string;              // meta author, from site.json owner.name
+  rss?: string;                 // path of the RSS feed when the site has one
 }
 const {
   title, description, path, siteName, ogLocale,
   alternates = [], xDefault, ogLocaleAlternates = [],
   ogImage = '/og-default.png', themeColor, favicon = '/favicon.svg',
-  robots = 'index, follow, max-image-preview:large',
+  robots = 'index, follow, max-image-preview:large', author, rss,
 } = Astro.props;
 const site = Astro.site;
 if (!site) throw new Error('astro-kit: `site` is not set — the kit() integration sets it from site.json');
@@ -40,6 +42,7 @@ const canonical = abs(path);
 {alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={abs(a.href)} />)}
 {xDefault && <link rel="alternate" hreflang="x-default" href={abs(xDefault)} />}
 <meta name="robots" content={robots} />
+{author && <meta name="author" content={author} />}
 {themeColor && <meta name="theme-color" content={themeColor} />}
 <meta property="og:type" content="website" />
 <meta property="og:title" content={title} />
@@ -50,5 +53,9 @@ const canonical = abs(path);
 {ogLocaleAlternates.map((o) => <meta property="og:locale:alternate" content={o} />)}
 <meta property="og:image" content={abs(ogImage)} />
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={abs(ogImage)} />
 <link rel="icon" href={favicon} type={favicon.endsWith('.svg') ? 'image/svg+xml' : undefined} />
 <link rel="sitemap" href="/sitemap-index.xml" />
+{rss && <link rel="alternate" type="application/rss+xml" title={`${siteName} feed`} href={abs(rss)} />}

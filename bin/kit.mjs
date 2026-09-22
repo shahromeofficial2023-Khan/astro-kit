@@ -66,6 +66,10 @@ function check() {
     const visible = body.replace(/<[^>]+>/g, ' ');
     const left = new Set(visible.match(/\{[A-Za-z]\w*\}/g) ?? []);
     if (left.size) problems.push(`${path}: leftover template tokens ${[...left].join(' ')}`);
+    // identity placeholders ([OWNER_NAME], [OWNER_EMAIL], [SOCIAL_X], [CITY, COUNTRY], [DOMAIN]) never ship
+    const holders = new Set(s.match(/\[(?:OWNER|SOCIAL|CITY|DOMAIN)[A-Z_ ,]*\]/g) ?? []);
+    // KIT_ALLOW_PLACEHOLDERS=1 turns this into a warning for local QA of a site whose owner details are still pending
+    if (holders.size) (process.env.KIT_ALLOW_PLACEHOLDERS ? console.warn : problems.push.bind(problems))(`${path}: identity placeholders not filled in ${[...holders].join(' ')}`);
 
     // every referenced local asset must ship — a missing share image is invisible on the page
     const refs = [
@@ -94,7 +98,10 @@ function check() {
   let sm = '';
   for (const f of readdirSync(dist)) if (/^sitemap-\d+\.xml$/.test(f)) sm += readFileSync(join(dist, f), 'utf8');
   if (!sm) problems.push('no sitemap-N.xml in dist');
-  const missing = Object.keys(pages).filter((p) => !sm.includes(`<loc>${new URL(p, base).href}</loc>`));
+  const noindex = (p) => /<meta name="robots" content="[^"]*noindex/.test(pages[p]);
+  const missing = Object.keys(pages).filter((p) => !noindex(p) && !sm.includes(`<loc>${new URL(p, base).href}</loc>`));
+  const listed = Object.keys(pages).filter((p) => noindex(p) && sm.includes(`<loc>${new URL(p, base).href}</loc>`));
+  if (listed.length) problems.push(`sitemap lists noindex pages ${listed.join(' ')}`);
   if (sm && missing.length) problems.push(`sitemap is missing ${missing.join(' ')}`);
 
   // robots.txt points at the sitemap on the live host

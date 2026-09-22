@@ -1,0 +1,9 @@
+---
+/** Shell for the shared text pages: Layout + one readable column. */
+import Layout from '../components/Layout.astro';
+interface Props { title: string; description: string; path: string }
+const { title, description, path } = Astro.props;
+---
+<Layout title={title} description={description} path={path}>
+  <article class="wrap prose"><slot /></article>
+</Layout>

@@ -1,0 +1,11 @@
+---
+import Prose from './Prose.astro';
+import site from 'virtual:fleet-site';
+const o = site.owner!;
+---
+<Prose title={`About ${site.name}`} description={`Who runs ${site.name} and why it exists.`} path="/about-us/">
+  <h1>About {site.name}</h1>
+  {o.about ? <p set:text={o.about} /> : <p>{site.name} is a free {site.topic} tool. It works in your browser and needs no sign-up.</p>}
+  <p>{site.name} is run by {o.name}.</p>
+  <p>Found a mistake or have an idea? <a href="/contact-us/">Get in touch</a>.</p>
+</Prose>

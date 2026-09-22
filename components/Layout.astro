@@ -2,7 +2,8 @@
 /**
  * The page shell every fleet tool site shares: SEO head, brand colours from site.json, skip link,
  * header, footer with the site's disclaimer. Pages supply only their content.
- *   <Layout title description path>  ·  slots: head, logo, default
+ *   <Layout title description path>  ·  slots: head, logo, default, after-main, footer
+ *   `footer` replaces the default one-line footer; `after-main` sits between main and footer (back-to-top etc.).
  */
 import '../styles/base.css';
 import Head from './Head.astro';
@@ -11,9 +12,9 @@ import { tokensCss } from '../index.mjs';
 
 interface Props {
   title: string; description: string; path: string;
-  ogImage?: string; lang?: string; dir?: 'ltr' | 'rtl'; ogLocale?: string;
+  ogImage?: string; lang?: string; dir?: 'ltr' | 'rtl'; ogLocale?: string; robots?: string;
 }
-const { title, description, path, ogImage, lang = 'en', dir = 'ltr', ogLocale = 'en_US' } = Astro.props;
+const { title, description, path, ogImage, lang = 'en', dir = 'ltr', ogLocale = 'en_US', robots } = Astro.props;
 const tokens = site.brand_tokens;
 const css = tokensCss(tokens);
 ---
@@ -21,7 +22,8 @@ const css = tokensCss(tokens);
 <html lang={lang} dir={dir}>
 <head>
   <Head title={title} description={description} path={path} siteName={site.name}
-    ogLocale={ogLocale} ogImage={ogImage} themeColor={tokens?.light?.header} />
+    ogLocale={ogLocale} ogImage={ogImage} themeColor={tokens?.light?.header} robots={robots}
+    author={site.owner?.name} rss={site.rss ? '/rss.xml' : undefined} />
   {css && <style is:inline set:html={css} />}
   <slot name="head" />
 </head>
@@ -34,8 +36,11 @@ const css = tokensCss(tokens);
   </a>
 </div></header>
 <main id="main"><slot /></main>
+<slot name="after-main" />
+<slot name="footer">
 <footer><div class="wrap">
   {site.disclaimer && <p><strong>{site.name}</strong> {site.disclaimer}</p>}
 </div></footer>
+</slot>
 </body>
 </html>

@@ -31,6 +31,20 @@ export interface SiteConfig {
   brand_tokens?: { light: Record<string, string>; dark?: Record<string, string> };
   /** footer sentence after the site name, e.g. "gives estimates, not medical advice." */
   disclaimer?: string;
+  /** one-line site description for footers and feeds */
+  description?: string;
+  /** who runs the site; About/Contact pages and the author meta need name + email (never invented) */
+  owner?: { name: string; email: string; about?: string; location?: string; role?: string };
+  /** "Last updated" date printed on the legal pages, YYYY-MM-DD */
+  legal_date?: string;
+  /** true when the site runs (or is being prepared for) advertising — the privacy page then covers ads and cookies */
+  ads?: boolean;
+  /** true when the site serves /rss.xml — the head then advertises it */
+  rss?: boolean;
+  /** paths (with trailing slash) that carry a noindex robots meta; kept out of the XML sitemap */
+  noindex?: string[];
+  /** public profiles, rendered as footer links and schema.org sameAs */
+  social?: { label: string; url: string }[];
   /** when present, the kit generates /llms.txt from it */
   llms?: { summary: string; facts?: string[]; heading?: string; note?: string;
            links?: { title: string; path: string; note?: string }[] };
