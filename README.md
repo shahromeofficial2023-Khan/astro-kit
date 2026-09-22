@@ -57,6 +57,17 @@ import JsonLd from '@shahrome/astro-kit/JsonLd.astro';
 
 Multi-language sites pass `alternates`, `xDefault` and `ogLocaleAlternates`.
 
+## Theme (v0.3.2)
+
+`brand_tokens.light` is required; `brand_tokens.dark` is optional. `theme` decides how dark is applied:
+
+- `"auto"` (default) — dark follows the visitor's OS setting (`prefers-color-scheme`).
+- `"toggle"` — the page is light for everyone. Layout renders a 44px sun/moon button in the header
+  (slot `header-tools` sits beside it; `themeLabel` names it in the page's language); the choice is kept in
+  `localStorage("theme")` and applied before first paint, and `theme-color` follows it.
+
+`kit check` verifies contrast for both token sets either way.
+
 ## Page building blocks (v0.2)
 
 A fleet tool page is assembled, not written. Everything below reads `site.json` itself.

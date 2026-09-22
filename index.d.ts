@@ -29,6 +29,8 @@ export interface SiteConfig {
   /** light is required; dark overrides only what changes. Keys: header on_header hero_ink heading accent
    *  on_accent accent_ink progress result ground surface ink muted line err shadow */
   brand_tokens?: { light: Record<string, string>; dark?: Record<string, string> };
+  /** "auto" (default): dark follows the OS. "toggle": light for everyone, dark only via the header button (localStorage). */
+  theme?: 'auto' | 'toggle';
   /** footer sentence after the site name, e.g. "gives estimates, not medical advice." */
   disclaimer?: string;
   /** one-line site description for footers and feeds */
@@ -62,7 +64,7 @@ export declare function llmsTxt(o: {
   links: { title: string; path: string; note?: string }[];
   facts?: string[];
 }): Response;
-export declare function tokensCss(tokens: SiteConfig['brand_tokens']): string;
+export declare function tokensCss(tokens: SiteConfig['brand_tokens'], theme?: 'auto' | 'toggle'): string;
 export declare function contrast(a: string, b: string): number;
 export declare function contrastProblems(tokens: SiteConfig['brand_tokens']): string[];
 export declare const CONTRAST_PAIRS: [string, string, number][];

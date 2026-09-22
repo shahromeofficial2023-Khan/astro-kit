@@ -61,13 +61,19 @@ export function kit(s) {
   };
 }
 
-/** site.json brand_tokens → CSS custom properties. Dark mode inherits any token it doesn't set. */
-export function tokensCss(tokens) {
+/**
+ * site.json brand_tokens → CSS custom properties. Dark mode inherits any token it doesn't set.
+ * theme "auto" (default): dark follows the OS (`prefers-color-scheme`).
+ * theme "toggle": the page is light for everyone; dark applies only when <html data-theme="dark"> is set
+ * (Layout's header button, remembered in localStorage) — the OS setting is ignored.
+ */
+export function tokensCss(tokens, theme = 'auto') {
   if (!tokens?.light) return '';
   const decl = (t) => Object.entries(t).map(([k, v]) =>
     k === 'shadow' ? `--shadow:0 6px 24px ${v}` : `--${k.replace(/_/g, '-')}:${v}`).join(';');
-  const dark = tokens.dark ? `@media (prefers-color-scheme:dark){:root{${decl(tokens.dark)}}}` : '';
-  return `:root{${decl(tokens.light)};color-scheme:${tokens.dark ? 'light dark' : 'light'}}${dark}`;
+  if (!tokens.dark) return `:root{${decl(tokens.light)};color-scheme:light}`;
+  if (theme === 'toggle') return `:root{${decl(tokens.light)};color-scheme:light}:root[data-theme=dark]{${decl(tokens.dark)};color-scheme:dark}`;
+  return `:root{${decl(tokens.light)};color-scheme:light dark}@media (prefers-color-scheme:dark){:root{${decl(tokens.dark)}}}`;
 }
 
 /** Every text/background pair a fleet page draws, as [text token, background token, minimum ratio]. */
