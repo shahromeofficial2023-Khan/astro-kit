@@ -1,6 +1,6 @@
 {
   "name": "@shahrome/astro-kit",
-  "version": "0.3.6",
+  "version": "0.4.0",
   "description": "Shared SEO head, routes, build contract and share-image renderer for the ws12 Astro fleet.",
   "type": "module",
   "license": "MIT",
@@ -32,7 +32,14 @@
     "./Timeline.astro": "./components/Timeline.astro",
     "./ToolSchema.astro": "./components/ToolSchema.astro",
     "./pages/*": "./pages/*",
-    "./pages/legal.mjs": "./pages/legal.mjs"
+    "./pages/legal.mjs": "./pages/legal.mjs",
+    "./Breadcrumbs.astro": "./components/Breadcrumbs.astro",
+    "./Person.astro": "./components/Person.astro",
+    "./LocalBusiness.astro": "./components/LocalBusiness.astro",
+    "./Video.astro": "./components/Video.astro",
+    "./Product.astro": "./components/Product.astro",
+    "./Picture.astro": "./components/Picture.astro",
+    "./bin/images.mjs": "./bin/images.mjs"
   },
   "bin": {
     "kit": "./bin/kit.mjs"

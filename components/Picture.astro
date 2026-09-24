@@ -1,0 +1,14 @@
+---
+/** Responsive image from `kit images` output: <picture> with AVIF + WebP sources, lazy, explicit size (no CLS).
+ *  name = the file's base name in src/images/ (without extension); width/height = the original's. */
+import { WIDTHS } from '@shahrome/astro-kit/bin/images.mjs';
+interface Props { name: string; alt: string; width: number; height: number; sizes?: string; eager?: boolean; class?: string }
+const { name, alt, width, height, sizes = '(max-width: 800px) 100vw, 800px', eager = false, class: cls } = Astro.props;
+const ws = [...WIDTHS.filter((w) => w < width), width];
+const set = (fmt: string) => ws.map((w) => `/images/${name}-${w}.${fmt} ${w}w`).join(', ');
+---
+<picture>
+  <source type="image/avif" srcset={set('avif')} sizes={sizes} />
+  <source type="image/webp" srcset={set('webp')} sizes={sizes} />
+  <img src={`/images/${name}-${width}.webp`} alt={alt} width={width} height={height} loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager ? 'high' : undefined} class={cls} />
+</picture>

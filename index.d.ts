@@ -28,6 +28,16 @@ export interface SiteConfig {
   dmca?: string | null;
   /** GA4 measurement id "G-XXXX"; the kit renders the gtag snippet in <head> when set */
   analytics?: string | null;
+  /** IndexNow key (kit indexnow key writes it and public/<key>.txt) */
+  indexnow?: string;
+  /** self-hosted fonts: woff2 files in public/fonts/, rendered as @font-face with display:swap; the first is preloaded */
+  fonts?: { family: string; src: string; weight?: string; style?: string }[];
+  /** profile URLs for the footer and Organization.sameAs */
+  social?: { label: string; url: string }[];
+  /** source-language strings that must not remain on a translated page (kit cannibal) */
+  locale_markers?: string[];
+  /** the owner's video for the homepage: <Video> + VideoObject */
+  video?: { id: string; name: string; description: string; uploadDate: string };
   og?: { colors?: Record<string, string>; cards: OgCard[] };
   /** light is required; dark overrides only what changes. Keys: header on_header hero_ink heading accent
    *  on_accent accent_ink progress result ground surface ink muted line err shadow */
@@ -46,7 +56,6 @@ export interface SiteConfig {
   ads?: boolean;
   /** true when the site serves /rss.xml — the head then advertises it */
   rss?: boolean;
-  /** paths (with trailing slash) that carry a noindex robots meta; kept out of the XML sitemap */
   /** paths kept out of the index and the sitemap: exact \"/search/\" or prefix \"/blog/*\"; Layout emits noindex,follow */
   noindex?: string[];
   /** public profiles, rendered as footer links and schema.org sameAs */

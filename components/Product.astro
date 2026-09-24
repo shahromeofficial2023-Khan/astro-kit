@@ -1,0 +1,13 @@
+---
+/** Product JSON-LD (ecommerce / affiliate pages). Ratings only when they are real, counted reviews. */
+import JsonLd from './JsonLd.astro';
+interface Props { name: string; description: string; image?: string | string[]; sku?: string; brand?: string; url?: string;
+  offer?: { price: string; currency: string; availability?: string; url?: string }; rating?: { value: number; count: number } }
+const { name, description, image, sku, brand, url, offer, rating } = Astro.props;
+const abs = (u?: string) => (u ? new URL(u, Astro.site).href : undefined);
+const graph = [{ '@type': 'Product', name, description, ...(image ? { image: (Array.isArray(image) ? image : [image]).map(abs) } : {}), sku,
+  ...(brand ? { brand: { '@type': 'Brand', name: brand } } : {}), url: abs(url),
+  ...(offer ? { offers: { '@type': 'Offer', price: offer.price, priceCurrency: offer.currency, availability: `https://schema.org/${offer.availability ?? 'InStock'}`, url: abs(offer.url ?? url) } } : {}),
+  ...(rating ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: rating.value, reviewCount: rating.count } } : {}) }];
+---
+<JsonLd graph={graph} />

@@ -24,6 +24,8 @@ const { title, description, path, ogImage, lang = 'en', dir = 'ltr', ogLocale = 
   alternates = [], xDefault, ogLocaleAlternates = [], fontHref, bodyClass, themeLabel = 'Dark mode' } = Astro.props;
 // a page listed in site.json "noindex" (exact or "/prefix/*") is noindex,follow unless it sets robots itself
 const robotsValue = robots ?? (isNoindexPath(site, path) ? 'noindex, follow' : undefined);
+// self-hosted fonts from site.json (woff2 in public/fonts/): preload the first, display swap for all — no third-party font request
+const fonts = (site.fonts ?? []) as { family: string; src: string; weight?: string; style?: string }[];
 const tokens = site.brand_tokens;
 const toggle = site.theme === 'toggle' && !!tokens?.dark;
 const css = tokensCss(tokens, site.theme);
@@ -36,6 +38,8 @@ const darkHeader = tokens?.dark?.header ?? tokens?.light?.header;
     ogLocale={ogLocale} ogImage={ogImage} themeColor={tokens?.light?.header} robots={robotsValue}
     alternates={alternates} xDefault={xDefault} ogLocaleAlternates={ogLocaleAlternates}
     author={site.owner?.name} rss={site.rss ? '/rss.xml' : undefined} />
+  {fonts.length > 0 && <link rel="preload" href={fonts[0].src} as="font" type="font/woff2" crossorigin />}
+  {fonts.length > 0 && <style is:inline set:html={fonts.map((f) => `@font-face{font-family:'${f.family}';src:url('${f.src}') format('woff2');font-weight:${f.weight ?? '400 700'};font-style:${f.style ?? 'normal'};font-display:swap}`).join('')} />}
   {fontHref && <><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link rel="stylesheet" href={fontHref} /></>}
   {css && <style is:inline set:html={css} />}
   {toggle && <script is:inline set:html={`try{var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.dataset.theme='dark'}catch(e){}`} />}

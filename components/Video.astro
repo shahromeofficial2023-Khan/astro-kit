@@ -1,0 +1,16 @@
+---
+/** A YouTube video: click-to-load poster (no iframe until the visitor asks) + VideoObject JSON-LD. */
+import JsonLd from './JsonLd.astro';
+interface Props { id: string; name: string; description: string; uploadDate: string; heading?: boolean; playLabel?: string }
+const { id, name, description, uploadDate, heading = true, playLabel = '▶ Play on YouTube' } = Astro.props;
+const thumb = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+---
+{heading && <h2 id="video">Video: {name}</h2>}
+<div class="video"><a href={`https://www.youtube.com/watch?v=${id}`} rel="noopener" target="_blank" class="lite-youtube" data-id={id}>
+  <img src={thumb} alt={`Video thumbnail: ${name}`} width="480" height="360" loading="lazy" decoding="async" /><span>{playLabel}</span></a></div>
+<JsonLd graph={[{ '@type': 'VideoObject', name, description, thumbnailUrl: thumb, uploadDate, embedUrl: `https://www.youtube.com/embed/${id}`, contentUrl: `https://www.youtube.com/watch?v=${id}` }]} />
+<style>
+  .video a { position: relative; display: block; max-width: 480px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line) }
+  .video img { display: block; width: 100%; height: auto }
+  .video span { position: absolute; inset: auto 12px 12px auto; background: var(--accent); color: var(--on-accent); padding: 8px 14px; border-radius: 6px; font-weight: 700 }
+</style>

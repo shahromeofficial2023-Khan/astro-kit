@@ -152,3 +152,10 @@ fix a defect; anything that changes output is called out in the tag's notes.
 
 ## 0.3.6
 - `site.noindex` accepts prefix wildcards (`/blog/*`); such pages are noindex,follow by default and leave the sitemap. `isNoindexPath()` exported.
+
+## 0.4.0 — the launch contract
+- `kit launch [url]` — pre-launch gate: `check` + `cannibal` + `onpage` on dist/, content QA, then live probes (HTTPS, redirects, security + cache headers, robots/sitemap, every sitemap URL 200, GA4, IndexNow key). Writes `docs/launch_audit.md`; MANUAL rows go in the site's qa-report.
+- `kit cannibal`, `kit onpage [--page]` — moved in from p007; `keyword-map.json` rows may be `"/prefix/*"` with `"primary": "… {slug}"`.
+- `kit headers` — cache (immutable assets, revalidate HTML), HSTS, Permissions-Policy, nosniff, referrer, frame options; www/interim/legacy redirects into `vercel.json`.
+- `kit indexnow key|submit` — Bing/Yandex instant indexing. `kit images` — WebP/AVIF variants → `<Picture>`.
+- Components: `Breadcrumbs`, `Person`, `LocalBusiness`, `Video`, `Product`, `Picture`. `site.json.fonts` → self-hosted @font-face + preload.

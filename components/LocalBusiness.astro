@@ -1,0 +1,18 @@
+---
+/** LocalBusiness JSON-LD for a bricks-and-mortar or service-area site (RankMath Local SEO equivalent). Pass only real facts. */
+import JsonLd from './JsonLd.astro';
+interface Props {
+  type?: string; name: string; url?: string; telephone?: string; email?: string; image?: string; priceRange?: string;
+  address?: { street: string; city: string; region: string; postal: string; country: string };
+  geo?: { lat: number; lng: number }; areaServed?: string[]; sameAs?: string[];
+  hours?: { days: string[]; opens: string; closes: string }[]; id?: string;
+}
+const { type = 'LocalBusiness', name, url, telephone, email, image, priceRange, address, geo, areaServed, sameAs, hours, id } = Astro.props;
+const abs = (u?: string) => (u ? new URL(u, Astro.site).href : undefined);
+const graph = [{ '@type': type, ...(id ? { '@id': abs(id) } : {}), name, url: abs(url ?? '/'), telephone, email, image: abs(image), priceRange,
+  ...(address ? { address: { '@type': 'PostalAddress', streetAddress: address.street, addressLocality: address.city, addressRegion: address.region, postalCode: address.postal, addressCountry: address.country } } : {}),
+  ...(geo ? { geo: { '@type': 'GeoCoordinates', latitude: geo.lat, longitude: geo.lng } } : {}),
+  ...(areaServed?.length ? { areaServed } : {}), ...(sameAs?.length ? { sameAs } : {}),
+  ...(hours?.length ? { openingHoursSpecification: hours.map((h) => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: h.days, opens: h.opens, closes: h.closes })) } : {}) }];
+---
+<JsonLd graph={graph} />

@@ -1,9 +1,15 @@
 #!/usr/bin/env node
 // kit — the fleet's build contract and helpers. Run from a site's repo root.
 //
-//   kit check    inspect dist/ against the contract every fleet site must pass
-//   kit og       render the share images listed in site.json → public/
-//   kit doctor   site.json valid? kit pin current? what would an upgrade change?
+//   kit check      inspect dist/ against the contract every fleet site must pass
+//   kit cannibal   one page per keyword (keyword-map.json): duplicate titles / H1s / descriptions / primaries
+//   kit onpage     the 62-check on-page template on every indexable page  [--page /es/]
+//   kit launch     the pre-launch gate: dist gates + live probes on the URL → docs/launch_audit.md  [url]
+//   kit headers    write cache + security headers and standard redirects into vercel.json
+//   kit indexnow   key | submit — instant indexing for Bing/Yandex
+//   kit images     src/images/*.{png,jpg} → public/images/*-<w>.{webp,avif}
+//   kit og         render the share images listed in site.json → public/
+//   kit doctor     site.json valid? kit pin current? what would an upgrade change?
 //
 // Prints JSON; exits 1 on any problem, so CI and fleet.py can gate on it.
 import { readFileSync, existsSync, readdirSync, statSync, writeFileSync } from 'node:fs';
@@ -170,6 +176,15 @@ function doctor() {
 }
 
 const cmd = process.argv[2];
-const run = { check, og, doctor }[cmd];
-if (!run) { console.error('usage: kit <check|og|doctor>'); process.exit(2); }
+const argv = process.argv.slice(3);
+const lazy = {
+  cannibal: async () => (await import('./cannibal.mjs')).cannibal(),
+  onpage: async () => (await import('./onpage.mjs')).onpage(argv.includes('--page') ? argv[argv.indexOf('--page') + 1] : null),
+  launch: async () => (await import('./launch.mjs')).launch(argv.find((a) => a.startsWith('http'))),
+  headers: async () => (await import('./headers.mjs')).headers(),
+  indexnow: async () => (await import('./indexnow.mjs')).indexnow(argv[0] === 'key' ? 'key' : 'submit', argv),
+  images: async () => (await import('./images.mjs')).images(),
+};
+const run = { check, og, doctor, ...lazy }[cmd];
+if (!run) { console.error('usage: kit <check|cannibal|onpage|launch|headers|indexnow|images|og|doctor>'); process.exit(2); }
 await run();

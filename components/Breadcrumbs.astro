@@ -1,0 +1,17 @@
+---
+/** Visible breadcrumb trail + BreadcrumbList JSON-LD. items = [{ name, url }] from the site's own map, last = current page. */
+import JsonLd from './JsonLd.astro';
+interface Props { items: { name: string; url: string }[]; label?: string }
+const { items, label = 'Breadcrumb' } = Astro.props;
+const graph = [{ '@type': 'BreadcrumbList', itemListElement: items.map((it, i) => ({
+  '@type': 'ListItem', position: i + 1, name: it.name, item: new URL(it.url, Astro.site).href })) }];
+---
+<nav class="crumbs" aria-label={label}><ol>
+  {items.map((it, i) => <li>{i < items.length - 1 ? <a href={it.url}>{it.name}</a> : <span aria-current="page">{it.name}</span>}</li>)}
+</ol></nav>
+<JsonLd graph={graph} />
+<style>
+  .crumbs ol { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 6px; font-size: .875rem; color: var(--muted) }
+  .crumbs li + li::before { content: '›'; margin-right: 6px }
+  .crumbs a { color: var(--accent-ink) }
+</style>
