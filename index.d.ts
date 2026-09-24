@@ -27,6 +27,8 @@ export interface SiteConfig {
   /** dmca.com badge id; the site footer renders the protection badge when set */
   dmca?: string | null;
   /** GA4 measurement id "G-XXXX"; the kit renders the gtag snippet in <head> when set */
+  /** robots.txt: extra Disallow paths (default /search/ and /*?*) and user-agents blocked from the whole site */
+  robots?: { disallow?: string[]; block_agents?: string[] };
   analytics?: string | null;
   /** IndexNow key (kit indexnow key writes it and public/<key>.txt) */
   indexnow?: string;

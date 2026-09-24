@@ -159,3 +159,6 @@ fix a defect; anything that changes output is called out in the tag's notes.
 - `kit headers` — cache (immutable assets, revalidate HTML), HSTS, Permissions-Policy, nosniff, referrer, frame options; www/interim/legacy redirects into `vercel.json`.
 - `kit indexnow key|submit` — Bing/Yandex instant indexing. `kit images` — WebP/AVIF variants → `<Picture>`.
 - Components: `Breadcrumbs`, `Person`, `LocalBusiness`, `Video`, `Product`, `Picture`. `site.json.fonts` → self-hosted @font-face + preload.
+
+## 0.4.2
+- robots.txt reads `site.robots` — `disallow` (default `/search/`, `/*?*`) and `block_agents`.
