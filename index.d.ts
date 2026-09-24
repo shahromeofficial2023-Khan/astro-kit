@@ -68,6 +68,8 @@ export interface SiteConfig {
 export declare const HOSTS: Host[];
 export declare function validateSite(s: unknown): string[];
 export declare function siteUrl(s: SiteConfig): string;
+/** True when the path is listed in site.json noindex (exact "/search/" or prefix "/blog/*"). */
+export declare function isNoindexPath(s: SiteConfig, path: string): boolean;
 export declare function kit(s: SiteConfig | Record<string, unknown>): AstroIntegration;
 export declare function llmsTxt(o: {
   site: URL;
