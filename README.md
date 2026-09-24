@@ -143,3 +143,6 @@ Run from a site's root, after `npm run build`:
 
 Semver tags (`v0.1.0`). A patch or minor release must not change any site's built output except to
 fix a defect; anything that changes output is called out in the tag's notes.
+
+## 0.3.4
+- Layout renders the GA4 gtag snippet when `site.analytics` is a `G-` measurement id.

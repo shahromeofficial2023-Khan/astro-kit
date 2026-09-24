@@ -24,6 +24,7 @@ export interface SiteConfig {
   kit: string;
   brand?: string;
   locales?: string[];
+  /** GA4 measurement id "G-XXXX"; the kit renders the gtag snippet in <head> when set */
   analytics?: string | null;
   og?: { colors?: Record<string, string>; cards: OgCard[] };
   /** light is required; dark overrides only what changes. Keys: header on_header hero_ink heading accent

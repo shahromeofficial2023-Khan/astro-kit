@@ -37,6 +37,10 @@ const darkHeader = tokens?.dark?.header ?? tokens?.light?.header;
   {fontHref && <><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link rel="stylesheet" href={fontHref} /></>}
   {css && <style is:inline set:html={css} />}
   {toggle && <script is:inline set:html={`try{var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.dataset.theme='dark'}catch(e){}`} />}
+  {site.analytics && /^G-[A-Z0-9]+$/.test(site.analytics) && <>
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${site.analytics}`}></script>
+    <script is:inline set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${site.analytics}');`} />
+  </>}
   <slot name="head" />
 </head>
 <body class={bodyClass}>
