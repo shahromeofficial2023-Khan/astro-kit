@@ -47,6 +47,7 @@ export interface SiteConfig {
   /** true when the site serves /rss.xml — the head then advertises it */
   rss?: boolean;
   /** paths (with trailing slash) that carry a noindex robots meta; kept out of the XML sitemap */
+  /** paths kept out of the index and the sitemap: exact \"/search/\" or prefix \"/blog/*\"; Layout emits noindex,follow */
   noindex?: string[];
   /** public profiles, rendered as footer links and schema.org sameAs */
   social?: { label: string; url: string }[];

@@ -149,3 +149,6 @@ fix a defect; anything that changes output is called out in the tag's notes.
 
 ## 0.3.5
 - `site.dmca` typed (badge id); fleet footers may render the DMCA badge from it.
+
+## 0.3.6
+- `site.noindex` accepts prefix wildcards (`/blog/*`); such pages are noindex,follow by default and leave the sitemap. `isNoindexPath()` exported.
