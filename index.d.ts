@@ -24,6 +24,8 @@ export interface SiteConfig {
   kit: string;
   brand?: string;
   locales?: string[];
+  /** dmca.com badge id; the site footer renders the protection badge when set */
+  dmca?: string | null;
   /** GA4 measurement id "G-XXXX"; the kit renders the gtag snippet in <head> when set */
   analytics?: string | null;
   og?: { colors?: Record<string, string>; cards: OgCard[] };
